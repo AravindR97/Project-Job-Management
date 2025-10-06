@@ -13,6 +13,7 @@
   "column_break_fiid",
   "job_start_date",
   "estimated_job_end_date",
+  "estimated_hours_per_day",
   "manually_add_time",
   "estimated_time_in_hrs"
  ],
@@ -43,7 +44,7 @@
   {
    "fieldname": "estimated_time_in_hrs",
    "fieldtype": "Float",
-   "label": "Estimated Time in hrs",
+   "label": "Estimated Total Job Time in hrs",
    "read_only_depends_on": "eval: !doc.manually_add_time;"
   },
   {
@@ -66,13 +67,20 @@
    "default": "0",
    "fieldname": "manually_add_time",
    "fieldtype": "Check",
-   "label": "Manually Add Time"
+   "label": "Manually Add Total Job Time"
+  },
+  {
+   "default": "8",
+   "depends_on": "eval: !doc.manually_add_time;",
+   "fieldname": "estimated_hours_per_day",
+   "fieldtype": "Float",
+   "label": "Estimated Working Hours per Day"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-10-06 15:34:29.767157",
+ "modified": "2025-10-06 15:55:09.435955",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",
