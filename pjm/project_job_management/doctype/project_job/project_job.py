@@ -18,3 +18,17 @@ class ProjectJob(Document):
 			self.unit_cost = self.estimated_project_cost/self.estimated_time_in_hrs
 		else:
 			frappe.throw("Total Job Time cannot be zero")
+
+		if self.job_status == "Completed":
+			job_time = frappe.get_all(
+						"Timesheet",
+						filters={
+							"project": self.project,
+							"docstatus": 1
+						},
+						fields = ["sum(total_hours) as total_job_time"]
+					)
+			if job_time:
+				self.actual_total_job_time_in_hrs = job_time[0].total_job_time
+		else:
+			self.actual_total_job_time_in_hrs = None
