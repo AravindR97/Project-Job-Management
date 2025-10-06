@@ -17,7 +17,9 @@
   "estimated_hours_per_day",
   "manually_add_time",
   "estimated_time_in_hrs",
-  "actual_total_job_time_in_hrs"
+  "section_break_ntsn",
+  "actual_total_job_time_in_hrs",
+  "job_timesheets"
  ],
  "fields": [
   {
@@ -86,16 +88,27 @@
    "mandatory_depends_on": "eval:doc.job_status == \"Completed\";"
   },
   {
+   "depends_on": "eval:doc.actual_total_job_time_in_hrs;",
    "fieldname": "actual_total_job_time_in_hrs",
    "fieldtype": "Float",
    "label": "Actual Total Job Time in Hrs",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_ntsn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "job_timesheets",
+   "fieldtype": "Table",
+   "label": "Job Timesheets",
+   "options": "Job Timesheet Item"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-10-06 16:26:40.974142",
+ "modified": "2025-10-06 17:46:34.463145",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",
