@@ -8,6 +8,7 @@
  "field_order": [
   "project",
   "job_status",
+  "actual_job_end_date",
   "estimated_project_cost",
   "unit_cost",
   "column_break_fiid",
@@ -15,7 +16,8 @@
   "estimated_job_end_date",
   "estimated_hours_per_day",
   "manually_add_time",
-  "estimated_time_in_hrs"
+  "estimated_time_in_hrs",
+  "actual_total_job_time_in_hrs"
  ],
  "fields": [
   {
@@ -44,7 +46,7 @@
   {
    "fieldname": "estimated_time_in_hrs",
    "fieldtype": "Float",
-   "label": "Estimated Total Job Time in hrs",
+   "label": "Estimated Total Job Time in Hrs",
    "read_only_depends_on": "eval: !doc.manually_add_time;"
   },
   {
@@ -75,12 +77,25 @@
    "fieldname": "estimated_hours_per_day",
    "fieldtype": "Float",
    "label": "Estimated Working Hours per Day"
+  },
+  {
+   "depends_on": "eval:doc.job_status == \"Completed\";",
+   "fieldname": "actual_job_end_date",
+   "fieldtype": "Date",
+   "label": "Actual Job End Date",
+   "mandatory_depends_on": "eval:doc.job_status == \"Completed\";"
+  },
+  {
+   "fieldname": "actual_total_job_time_in_hrs",
+   "fieldtype": "Float",
+   "label": "Actual Total Job Time in Hrs",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-10-06 15:55:09.435955",
+ "modified": "2025-10-06 16:26:40.974142",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",

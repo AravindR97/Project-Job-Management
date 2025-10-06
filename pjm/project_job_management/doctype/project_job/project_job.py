@@ -13,3 +13,8 @@ class ProjectJob(Document):
 				self.estimated_time_in_hrs = frappe.utils.days_diff(self.estimated_job_end_date, self.job_start_date) * self.estimated_hours_per_day
 		else:
 			self.estimated_time_in_hrs = 0.0
+
+		if self.estimated_time_in_hrs != 0:
+			self.unit_cost = self.estimated_project_cost/self.estimated_time_in_hrs
+		else:
+			frappe.throw("Total Job Time cannot be zero")
