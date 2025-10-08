@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "project",
+  "project_name",
   "job_status",
   "actual_job_end_date",
   "estimated_project_cost",
@@ -22,6 +23,7 @@
   "job_timesheets",
   "section_break_hkvs",
   "working_cost",
+  "billed_invoice_amount",
   "column_break_qfwh",
   "working_hours"
  ],
@@ -62,6 +64,7 @@
    "options": "\nActive\nCompleted\nCancelled\nOn Hold"
   },
   {
+   "fetch_from": "project.estimated_costing",
    "fieldname": "estimated_project_cost",
    "fieldtype": "Currency",
    "label": "Estimated Project Cost"
@@ -99,8 +102,10 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:doc.project;",
    "fieldname": "section_break_ntsn",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Timesheets and Cost"
   },
   {
    "fieldname": "job_timesheets",
@@ -116,7 +121,7 @@
   {
    "fieldname": "working_cost",
    "fieldtype": "Float",
-   "label": "Working Cost",
+   "label": "Total Working Cost",
    "read_only": 1
   },
   {
@@ -126,14 +131,33 @@
   {
    "fieldname": "working_hours",
    "fieldtype": "Float",
-   "label": "Working Hours",
+   "label": "Total Working Hours",
+   "read_only": 1
+  },
+  {
+   "fieldname": "billed_invoice_amount",
+   "fieldtype": "Currency",
+   "label": "Billed Invoice Amount",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "project.project_name",
+   "fieldname": "project_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Project Name",
    "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-10-08 10:17:18.336493",
+ "links": [
+  {
+   "link_doctype": "Sales Invoice",
+   "link_fieldname": "project"
+  }
+ ],
+ "modified": "2025-10-08 12:33:32.140966",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",
@@ -156,5 +180,6 @@
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "project_name"
 }
