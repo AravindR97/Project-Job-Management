@@ -19,6 +19,7 @@ frappe.ui.form.on("Project Job", {
                     row.timesheet = timesheet.name;
                     row.date = timesheet.start_date;
                     row.working_hours = timesheet.total_hours;
+                    row.working_cost = timesheet.total_hours * frm.doc.unit_cost;
                     row.created_by = timesheet.owner;
                     total_hours += timesheet.total_hours;
                 });
