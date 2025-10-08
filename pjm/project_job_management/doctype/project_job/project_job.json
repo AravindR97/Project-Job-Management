@@ -18,6 +18,8 @@
   "estimated_hours_per_day",
   "manually_add_time",
   "estimated_time_in_hrs",
+  "employee_details_section",
+  "assigned_employees",
   "section_break_ntsn",
   "actual_total_job_time_in_hrs",
   "job_timesheets",
@@ -148,6 +150,18 @@
    "in_list_view": 1,
    "label": "Project Name",
    "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "employee_details_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Details"
+  },
+  {
+   "fieldname": "assigned_employees",
+   "fieldtype": "Table",
+   "label": "Assigned Employees",
+   "options": "Project Job Employee"
   }
  ],
  "grid_page_length": 50,
@@ -158,7 +172,7 @@
    "link_fieldname": "project"
   }
  ],
- "modified": "2025-10-08 12:43:24.819420",
+ "modified": "2025-10-08 13:11:51.376310",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",
