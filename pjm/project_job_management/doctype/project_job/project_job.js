@@ -14,18 +14,28 @@ frappe.ui.form.on("Project Job", {
                 if(r && r.length > 0) {
                     frm.clear_table('job_timesheets');
                     
-                    let total_hours = 0 | flt;
+                    let total_hours = 0.0;
+                    let total_working_cost = 0.0;
                     r.forEach(timesheet => {
                         let row = frm.add_child('job_timesheets');
                         row.timesheet = timesheet.name;
                         row.date = timesheet.start_date;
                         row.working_hours = timesheet.total_hours;
-                        row.working_cost = timesheet.total_hours * frm.doc.unit_cost;
                         row.created_by = timesheet.owner;
+
+                        let employee_row = frm.doc.assigned_employees?.find(
+                            emp => emp.user === timesheet.owner
+                        );
+
+                        row.hourly_cost = employee_row ? flt(employee_row.cost_per_hour) : 0.0;
+                        row.working_cost = flt(row.hourly_cost) * flt(row.working_hours);
+
                         total_hours += timesheet.total_hours;
+                        total_working_cost += row.working_cost;
                     });
+
                     frm.doc.working_hours = total_hours;
-                    frm.doc.working_cost = total_hours * frm.doc.unit_cost;
+                    frm.doc.working_cost = total_working_cost;
 
                     frappe.db.get_value("Project", frm.doc.project, "total_billed_amount")
                     .then(r=>{

@@ -56,7 +56,7 @@
   {
    "fieldname": "estimated_time_in_hrs",
    "fieldtype": "Float",
-   "label": "Estimated Total Job Time in Hrs",
+   "label": "Estimated Job Time in Hrs",
    "read_only_depends_on": "eval: !doc.manually_add_time;"
   },
   {
@@ -81,7 +81,7 @@
    "default": "1",
    "fieldname": "manually_add_time",
    "fieldtype": "Check",
-   "label": "Manually Add Total Job Time"
+   "label": "Manually Add Estimated Job Time"
   },
   {
    "default": "8",
@@ -172,7 +172,7 @@
    "link_fieldname": "project"
   }
  ],
- "modified": "2025-10-08 13:11:51.376310",
+ "modified": "2025-10-08 14:31:11.810104",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",
