@@ -3,7 +3,7 @@
 
 frappe.ui.form.on("Project Job", {
     refresh(frm) {
-        if(!frm.is_new && frm.doc.project){
+        if(!frm.is_new() && frm.doc.project){
             frappe.db.get_list("Timesheet", {
                 filters: {
                     "parent_project": frm.doc.project,
