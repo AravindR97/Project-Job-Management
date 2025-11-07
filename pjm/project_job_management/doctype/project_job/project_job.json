@@ -23,11 +23,26 @@
   "section_break_ntsn",
   "actual_total_job_time_in_hrs",
   "job_timesheets",
-  "section_break_hkvs",
+  "tasks_section",
+  "job_task",
+  "event_section",
+  "events",
+  "section_break_atwb",
+  "overhead_section",
+  "administrator_salaries",
+  "company_monthly_expenses",
+  "total_overhead",
+  "column_break_aopz",
+  "additional_overhead",
+  "available_working_hours_per_month",
+  "overhead_rate_per_hour",
+  "section_break_jdok",
+  "column_break_odso",
   "working_cost",
   "billed_invoice_amount",
-  "column_break_qfwh",
-  "working_hours"
+  "column_break_cfzv",
+  "working_hours",
+  "total_working_cost"
  ],
  "fields": [
   {
@@ -108,28 +123,20 @@
    "depends_on": "eval:doc.project;",
    "fieldname": "section_break_ntsn",
    "fieldtype": "Section Break",
-   "label": "Timesheets and Cost"
+   "label": "Timesheets"
   },
   {
    "fieldname": "job_timesheets",
    "fieldtype": "Table",
    "label": "Job Timesheets",
-   "options": "Job Timesheet Item"
-  },
-  {
-   "depends_on": "eval:doc.job_timesheets;",
-   "fieldname": "section_break_hkvs",
-   "fieldtype": "Section Break"
+   "options": "Job Timesheet Item",
+   "read_only": 1
   },
   {
    "fieldname": "working_cost",
    "fieldtype": "Float",
-   "label": "Total Working Cost",
+   "label": "Total Working Cost (Time Sheet)",
    "read_only": 1
-  },
-  {
-   "fieldname": "column_break_qfwh",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "working_hours",
@@ -162,6 +169,94 @@
    "fieldtype": "Table",
    "label": "Assigned Employees",
    "options": "Project Job Employee"
+  },
+  {
+   "fieldname": "administrator_salaries",
+   "fieldtype": "Currency",
+   "label": "Administrator Salaries"
+  },
+  {
+   "fieldname": "company_monthly_expenses",
+   "fieldtype": "Currency",
+   "label": "Company Monthly Expenses"
+  },
+  {
+   "fieldname": "overhead_rate_per_hour",
+   "fieldtype": "Float",
+   "label": "Overhead Rate per Hour",
+   "read_only": 1
+  },
+  {
+   "fieldname": "available_working_hours_per_month",
+   "fieldtype": "Float",
+   "label": "Available Working Hours per Month"
+  },
+  {
+   "fieldname": "total_overhead",
+   "fieldtype": "Currency",
+   "label": "Total Overhead",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_working_cost",
+   "fieldtype": "Currency",
+   "label": "Total Working Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tasks_section",
+   "fieldtype": "Section Break",
+   "label": "Tasks"
+  },
+  {
+   "fieldname": "job_task",
+   "fieldtype": "Table",
+   "label": "Job Task",
+   "options": "Job Task Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "additional_overhead",
+   "fieldtype": "Currency",
+   "label": "Additional Overhead"
+  },
+  {
+   "fieldname": "section_break_atwb",
+   "fieldtype": "Section Break",
+   "label": "Overhead Cost"
+  },
+  {
+   "fieldname": "overhead_section",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_jdok",
+   "fieldtype": "Section Break",
+   "label": "Total"
+  },
+  {
+   "fieldname": "column_break_odso",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_aopz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "event_section",
+   "fieldtype": "Section Break",
+   "label": "Event"
+  },
+  {
+   "fieldname": "events",
+   "fieldtype": "Table",
+   "label": "Events",
+   "options": "Event Table"
+  },
+  {
+   "fieldname": "column_break_cfzv",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
@@ -172,7 +267,7 @@
    "link_fieldname": "project"
   }
  ],
- "modified": "2025-10-08 14:31:11.810104",
+ "modified": "2025-11-07 10:10:46.765368",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",
