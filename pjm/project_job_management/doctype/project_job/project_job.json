@@ -10,6 +10,7 @@
   "project_name",
   "job_status",
   "actual_job_end_date",
+  "reason",
   "estimated_project_cost",
   "column_break_fiid",
   "job_start_date",
@@ -72,6 +73,7 @@
   {
    "fieldname": "job_status",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Job Status",
    "options": "\nActive\nCompleted\nCancelled\nOn Hold"
   },
@@ -91,8 +93,7 @@
    "depends_on": "eval:doc.job_status == \"Completed\";",
    "fieldname": "actual_job_end_date",
    "fieldtype": "Date",
-   "label": "Actual Job End Date",
-   "mandatory_depends_on": "eval:doc.job_status == \"Completed\";"
+   "label": "Actual Job End Date"
   },
   {
    "depends_on": "eval:doc.project;",
@@ -116,12 +117,14 @@
   {
    "fieldname": "working_hours",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Total Working Hours",
    "read_only": 1
   },
   {
    "fieldname": "billed_invoice_amount",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Billed Invoice Amount",
    "read_only": 1
   },
@@ -175,6 +178,7 @@
   {
    "fieldname": "total_working_cost",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Total Working Cost",
    "read_only": 1
   },
@@ -220,6 +224,12 @@
   {
    "fieldname": "column_break_cfzv",
    "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.job_status == \"Cancelled\" || doc.job_status == \"On Hold\"",
+   "fieldname": "reason",
+   "fieldtype": "Data",
+   "label": "Reason"
   }
  ],
  "grid_page_length": 50,
@@ -230,7 +240,7 @@
    "link_fieldname": "project"
   }
  ],
- "modified": "2025-11-14 11:44:54.277204",
+ "modified": "2025-11-14 13:32:26.968739",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",

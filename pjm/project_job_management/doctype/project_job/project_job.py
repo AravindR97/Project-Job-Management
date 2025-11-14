@@ -9,8 +9,10 @@ class ProjectJob(Document):
 	
 	def before_save(self):
 
-		# --- Calculate unit cost safely ---
-		self.estimated_time_in_hrs = flt(self.estimated_project_cost or 0) / flt(self.unit_cost)
+		cost_per_hr=flt(self.unit_cost or 0)
+		if cost_per_hr  > 0:
+
+			self.estimated_time_in_hrs = flt(self.estimated_project_cost or 0) / flt(self.unit_cost)
 
 		# --- Calculate overhead & cost ---
 		self.calculate_overhead()
@@ -28,15 +30,17 @@ class ProjectJob(Document):
 		monthly_expenses = flt(self.company_monthly_expenses or 0)
 		total_available_hours = flt(self.available_working_hours_per_month or 0)
 
-		if total_available_hours <= 0:
-			frappe.throw("Available Working Hours per Month cannot be zero or empty.")
 
-		# Formula: Overhead Rate per Hour = (Admin Salaries + Monthly Expenses) / Total Hours
-		self.overhead_rate_per_hour = (admin_salaries + monthly_expenses) / total_available_hours
+		overhead_rate = flt(self.overhead_rate_per_hour or 0)
+		if total_available_hours > 0:
+			# Formula: Overhead Rate per Hour = (Admin Salaries + Monthly Expenses) / Total Hours
+			overhead_rate = (admin_salaries + monthly_expenses) / total_available_hours
+
+		self.overhead_rate_per_hour = overhead_rate
 
 		# Formula: Total Overhead = Overhead Rate × Total Hours Spent on Project
 		total_hours_spent = flt(self.working_hours or 0)
-		self.total_overhead = (self.overhead_rate_per_hour * total_hours_spent)  + self.additional_overhead
+		self.total_overhead = (overhead_rate * total_hours_spent) + flt(self.additional_overhead or 0)
 
 		# Formula: Total Working Cost = Total Overhead + Direct Working Cost
 		self.total_working_cost = self.total_overhead + flt(self.working_cost or 0)
