@@ -7,35 +7,27 @@
  "engine": "InnoDB",
  "field_order": [
   "date",
-  "timesheet",
   "employee",
+  "employee_name",
+  "column_break_yeli",
   "hourly_cost",
   "working_hours",
   "working_cost"
  ],
  "fields": [
   {
-   "fieldname": "timesheet",
-   "fieldtype": "Link",
-   "label": "Timesheet",
-   "options": "Timesheet",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "timesheet.total_hours",
    "fieldname": "working_hours",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Working Hours",
-   "read_only": 1
+   "label": "Working Hours"
   },
   {
+   "columns": 1,
    "fetch_from": "timesheet.start_date",
    "fieldname": "date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Date",
-   "read_only": 1
+   "label": "Date"
   },
   {
    "fieldname": "working_cost",
@@ -52,20 +44,31 @@
    "read_only": 1
   },
   {
-   "fetch_from": "timesheet.employee",
+   "columns": 1,
    "fieldname": "employee",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Employee",
-   "options": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_yeli",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-06 11:07:57.954673",
+ "modified": "2025-11-14 11:46:37.281121",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Job Timesheet Item",
