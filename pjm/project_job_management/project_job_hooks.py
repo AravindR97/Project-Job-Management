@@ -11,7 +11,17 @@ def update_project_job_on_purchase_invoice(doc, method):
 
 def update_project_job_on_journal_entry(doc, method):
 	"""Update Project Job financials when Journal Entry is submitted or cancelled."""
-	_update_project_job(doc.project)
+	# Journal Entry has project at account level, not document level
+	# Get all unique projects from the accounts
+	projects = set()
+	if hasattr(doc, "accounts") and doc.accounts:
+		for account in doc.accounts:
+			if account.project:
+				projects.add(account.project)
+	
+	# Update Project Jobs for all projects found in the accounts
+	for project in projects:
+		_update_project_job(project)
 
 
 def _update_project_job(project):
