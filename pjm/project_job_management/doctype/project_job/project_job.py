@@ -106,13 +106,14 @@ class ProjectJob(Document):
 
 	def calculate_total_working_cost(self):
 		"""
-		Calculate Total Working Cost = Working Cost + Journal Expense + Purchase Amount
+		Calculate Total Working Cost = Working Cost + Journal Expense + Purchase Amount + Total Overhead
 		"""
 		working_cost = flt(self.working_cost or 0)
 		journal_expense = flt(self.journal_expense or 0)
 		purchase_amount = flt(self.purchase_amount or 0)
+		total_overhead = flt(self.total_overhead or 0)
 		
-		self.total_working_cost = working_cost + journal_expense + purchase_amount
+		self.total_working_cost = working_cost + journal_expense + purchase_amount + total_overhead
 
 	def get_purchase_amount_from_pi(self) -> float:
 		"""Sum of Purchase Invoice base grand total linked to this Project."""
@@ -154,7 +155,7 @@ class ProjectJob(Document):
 	def calculate_profit(self):
 		"""
 		Calculate profit: Billed Invoice Amount - Total Working Cost
-		Total Working Cost already includes Working Cost + Journal Expense + Purchase Amount
+		Total Working Cost includes Working Cost + Journal Expense + Purchase Amount + Total Overhead
 		"""
 		billed_amount = flt(self.billed_invoice_amount or 0)
 		total_working_cost = flt(self.total_working_cost or 0)

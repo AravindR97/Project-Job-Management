@@ -200,7 +200,7 @@
    "fieldname": "total_working_cost",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Total Working Cost",
+   "label": "Total Project Cost",
    "read_only": 1
   },
   {
@@ -285,7 +285,7 @@
    "link_fieldname": "project"
   }
  ],
- "modified": "2025-11-19 16:57:22.131689",
+ "modified": "2025-11-19 18:25:26.088111",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",
