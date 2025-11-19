@@ -2,8 +2,6 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("Project Job", {
-    _recalculating_costs: false,
-
     async refresh(frm) {
         if (frm._just_saved) {
             delete frm._just_saved;
@@ -16,6 +14,7 @@ frappe.ui.form.on("Project Job", {
 
         if (!frm.is_new() && frm.doc.project) {
             try {
+                // Update billed invoice amount from Project
                 const billed = await frappe.db.get_value("Project", frm.doc.project, "total_billed_amount");
                 const billed_amount = billed?.message?.total_billed_amount || 0;
 
@@ -23,8 +22,30 @@ frappe.ui.form.on("Project Job", {
                     frm.doc.billed_invoice_amount = billed_amount;
                     frm.refresh_field("billed_invoice_amount");
                 }
+
+                // Update purchase amount and journal expense by reloading Project Job
+                // This ensures we get the latest calculated values
+                const project_job_data = await frappe.db.get_value("Project Job", frm.doc.name, [
+                    "purchase_amount",
+                    "journal_expense"
+                ]);
+
+                if (project_job_data?.message) {
+                    const purchase_amount = project_job_data.message.purchase_amount || 0;
+                    const journal_expense = project_job_data.message.journal_expense || 0;
+
+                    if (frm.doc.purchase_amount !== purchase_amount) {
+                        frm.doc.purchase_amount = purchase_amount;
+                        frm.refresh_field("purchase_amount");
+                    }
+
+                    if (frm.doc.journal_expense !== journal_expense) {
+                        frm.doc.journal_expense = journal_expense;
+                        frm.refresh_field("journal_expense");
+                    }
+                }
             } catch (error) {
-                console.error("Failed to fetch billed invoice amount", error);
+                console.error("Failed to fetch financial amounts", error);
             }
         }
     },

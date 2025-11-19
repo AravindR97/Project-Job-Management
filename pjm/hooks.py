@@ -137,13 +137,16 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Purchase Invoice": {
+		"on_submit": "pjm.project_job_management.project_job_hooks.update_project_job_on_purchase_invoice",
+		"on_cancel": "pjm.project_job_management.project_job_hooks.update_project_job_on_purchase_invoice",
+	},
+	"Journal Entry": {
+		"on_submit": "pjm.project_job_management.project_job_hooks.update_project_job_on_journal_entry",
+		"on_cancel": "pjm.project_job_management.project_job_hooks.update_project_job_on_journal_entry",
+	},
+}
 
 # Scheduled Tasks
 # ---------------

@@ -3,23 +3,31 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import flt, days_diff
+from frappe.utils import flt
+
 
 class ProjectJob(Document):
-	
+
 	def before_save(self):
-
-		cost_per_hr=flt(self.unit_cost or 0)
-		if cost_per_hr  > 0:
-
-			self.estimated_time_in_hrs = flt(self.estimated_project_cost or 0) / flt(self.unit_cost)
+		cost_per_hr = flt(self.unit_cost or 0)
+		if cost_per_hr > 0:
+			self.estimated_time_in_hrs = flt(self.estimated_project_cost or 0) / cost_per_hr
 
 		# --- Calculate overhead & cost ---
 		self.calculate_overhead()
-		
+
 		# --- Calculate employee totals from timesheets ---
 		self.calculate_employee_totals()
+
+		# --- Calculate project-linked financials (PI & JE) ---
+		self.update_project_financials()
 		
+		# --- Calculate total working cost ---
+		self.calculate_total_working_cost()
+		
+		# --- Calculate profit ---
+		self.calculate_profit()
+
 	def calculate_overhead(self):
 		"""
 		Calculate Overhead Rate per Hour and Total Overhead for Project
@@ -41,9 +49,6 @@ class ProjectJob(Document):
 		# Formula: Total Overhead = Overhead Rate × Total Hours Spent on Project
 		total_hours_spent = flt(self.working_hours or 0)
 		self.total_overhead = (overhead_rate * total_hours_spent) + flt(self.additional_overhead or 0)
-
-		# Formula: Total Working Cost = Total Overhead + Direct Working Cost
-		self.total_working_cost = self.total_overhead + flt(self.working_cost or 0)
 
 	def calculate_employee_totals(self):
 		"""
@@ -85,4 +90,74 @@ class ProjectJob(Document):
 			emp_row.total_working_hours = totals["total_hours"]
 			emp_row.total_working_cost = totals["total_cost"]
 
+	def update_project_financials(self):
+		"""
+		Calculate purchase cost from Purchase Invoices and
+		total expense from Journal Entries linked with this Project.
+		Values are stored on the Project Job as read-only fields.
+		"""
+		if not self.project:
+			self.purchase_amount = 0
+			self.journal_expense = 0
+			return
+
+		self.purchase_amount = self.get_purchase_amount_from_pi()
+		self.journal_expense = self.get_expense_from_journal_entries()
+
+	def calculate_total_working_cost(self):
+		"""
+		Calculate Total Working Cost = Working Cost + Journal Expense + Purchase Amount
+		"""
+		working_cost = flt(self.working_cost or 0)
+		journal_expense = flt(self.journal_expense or 0)
+		purchase_amount = flt(self.purchase_amount or 0)
+		
+		self.total_working_cost = working_cost + journal_expense + purchase_amount
+
+	def get_purchase_amount_from_pi(self) -> float:
+		"""Sum of Purchase Invoice base grand total linked to this Project."""
+		result = frappe.db.sql(
+			"""
+			SELECT SUM(base_grand_total) AS total
+			FROM `tabPurchase Invoice`
+			WHERE project = %s AND docstatus = 1
+			""",
+			self.project,
+			as_dict=True,
+		)
+
+		return flt(result[0].get("total")) if result and result[0].get("total") else 0.0
+
+	def get_expense_from_journal_entries(self) -> float:
+		"""
+		Total Expense from Journal Entries linked with this Project.
+
+		We use GL Entry so that only posted (submitted) entries are considered,
+		and we restrict to Expense accounts.
+		"""
+		result = frappe.db.sql(
+			"""
+			SELECT SUM(gle.debit - gle.credit) AS total
+			FROM `tabGL Entry` gle
+			JOIN `tabAccount` acc ON gle.account = acc.name
+			WHERE gle.project = %s
+			  AND gle.voucher_type = 'Journal Entry'
+			  AND gle.is_cancelled = 0
+			  AND acc.root_type = 'Expense'
+			""",
+			self.project,
+			as_dict=True,
+		)
+
+		return flt(result[0].get("total")) if result and result[0].get("total") else 0.0
+
+	def calculate_profit(self):
+		"""
+		Calculate profit: Billed Invoice Amount - Total Working Cost
+		Total Working Cost already includes Working Cost + Journal Expense + Purchase Amount
+		"""
+		billed_amount = flt(self.billed_invoice_amount or 0)
+		total_working_cost = flt(self.total_working_cost or 0)
+		
+		self.profit = billed_amount - total_working_cost
 

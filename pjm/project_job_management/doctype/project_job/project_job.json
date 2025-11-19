@@ -12,11 +12,13 @@
   "actual_job_end_date",
   "reason",
   "estimated_project_cost",
-  "column_break_fiid",
+  "unit_cost",
+  "column_break_evky",
   "job_start_date",
   "estimated_job_end_date",
   "estimated_time_in_hrs",
-  "unit_cost",
+  "invoice_status",
+  "client_req_doc_status",
   "employee_details_section",
   "assigned_employees",
   "section_break_ntsn",
@@ -27,17 +29,20 @@
   "overhead_section",
   "administrator_salaries",
   "company_monthly_expenses",
-  "total_overhead",
-  "column_break_aopz",
-  "additional_overhead",
-  "available_working_hours_per_month",
   "overhead_rate_per_hour",
-  "section_break_jdok",
-  "column_break_odso",
-  "working_cost",
-  "billed_invoice_amount",
-  "column_break_cfzv",
+  "column_break_aopz",
+  "available_working_hours_per_month",
+  "total_overhead",
+  "additional_overhead",
+  "section_break_gwcm",
   "working_hours",
+  "working_cost",
+  "profit",
+  "column_break_tlbd",
+  "journal_expense",
+  "purchase_amount",
+  "billed_invoice_amount",
+  "column_break_xexq",
   "total_working_cost"
  ],
  "fields": [
@@ -49,10 +54,6 @@
    "options": "Project",
    "reqd": 1,
    "unique": 1
-  },
-  {
-   "fieldname": "column_break_fiid",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "job_start_date",
@@ -74,8 +75,8 @@
    "fieldname": "job_status",
    "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Job Status",
-   "options": "\nActive\nCompleted\nCancelled\nOn Hold"
+   "label": "Project status",
+   "options": "\nStarted\nIn Progress\nDelayed\nOn Hold\nTraining\nHypercare\nCompleted\nCancelled"
   },
   {
    "fetch_from": "project.estimated_costing",
@@ -129,12 +130,32 @@
    "read_only": 1
   },
   {
+   "fieldname": "profit",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Profit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "purchase_amount",
+   "fieldtype": "Currency",
+   "label": "Purchase Amount (PI)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "journal_expense",
+   "fieldtype": "Currency",
+   "label": "Journal Entry Expense",
+   "read_only": 1
+  },
+  {
    "fetch_from": "project.project_name",
    "fieldname": "project_name",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Project Name",
-   "read_only": 1
+   "read_only": 1,
+   "unique": 1
   },
   {
    "fieldname": "employee_details_section",
@@ -197,15 +218,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_jdok",
-   "fieldtype": "Section Break",
-   "label": "Total"
-  },
-  {
-   "fieldname": "column_break_odso",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "column_break_aopz",
    "fieldtype": "Column Break"
   },
@@ -222,14 +234,39 @@
    "options": "Event Table"
   },
   {
-   "fieldname": "column_break_cfzv",
-   "fieldtype": "Column Break"
-  },
-  {
    "depends_on": "eval:doc.job_status == \"Cancelled\" || doc.job_status == \"On Hold\"",
    "fieldname": "reason",
    "fieldtype": "Data",
    "label": "Reason"
+  },
+  {
+   "fieldname": "invoice_status",
+   "fieldtype": "Select",
+   "label": "Invoice Status",
+   "options": "\nAdvance\nInvoiced\nPaid\nDue\nCompleted"
+  },
+  {
+   "fieldname": "client_req_doc_status",
+   "fieldtype": "Select",
+   "label": "Client Req Doc Status",
+   "options": "\nRequested\nPending\nCollected"
+  },
+  {
+   "fieldname": "section_break_gwcm",
+   "fieldtype": "Section Break",
+   "label": "Total"
+  },
+  {
+   "fieldname": "column_break_tlbd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xexq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_evky",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
@@ -238,9 +275,17 @@
   {
    "link_doctype": "Sales Invoice",
    "link_fieldname": "project"
+  },
+  {
+   "link_doctype": "Purchase Invoice",
+   "link_fieldname": "project"
+  },
+  {
+   "link_doctype": "Journal Entry",
+   "link_fieldname": "project"
   }
  ],
- "modified": "2025-11-14 13:32:26.968739",
+ "modified": "2025-11-19 16:57:22.131689",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",
@@ -256,6 +301,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
    "share": 1,
    "write": 1
   }
