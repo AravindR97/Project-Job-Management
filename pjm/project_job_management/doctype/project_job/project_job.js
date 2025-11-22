@@ -70,11 +70,15 @@ frappe.ui.form.on("Project Job", {
     },
 
     estimated_project_cost(frm) {
-        calculate_estimated_time(frm);
+        calculate_estimated_time(frm, 'estimated_project_cost');
     },
 
     unit_cost(frm) {
-        calculate_estimated_time(frm);
+        calculate_estimated_time(frm, 'unit_cost');
+    },
+
+    estimated_time_in_hrs(frm) {
+        calculate_estimated_time(frm, 'estimated_time_in_hrs');
     }
 });
 
@@ -182,22 +186,91 @@ const update_timesheet_summary = (frm) => {
     }
 };
 
-const calculate_estimated_time = (frm) => {
+const calculate_estimated_time = (frm, trigger_field = null) => {
     const estimated_project_cost = to_flt(frm.doc.estimated_project_cost);
     const unit_cost = to_flt(frm.doc.unit_cost);
+    const estimated_time_in_hrs = to_flt(frm.doc.estimated_time_in_hrs);
+    let has_changes = false;
 
-    if (unit_cost === 0 || !unit_cost) {
-        // Don't calculate if unit_cost is zero or empty
-        return;
+    // If estimated_project_cost changed, calculate based on which other field is available
+    if (trigger_field === 'estimated_project_cost') {
+        // Prefer calculating estimated_time_in_hrs if unit_cost is available
+        if (unit_cost > 0 && estimated_project_cost > 0) {
+            const calculated_time = estimated_project_cost / unit_cost;
+            const current_estimated_time = to_flt(frm.doc.estimated_time_in_hrs);
+
+            if (Math.abs(current_estimated_time - calculated_time) > 0.0001) {
+                frm.doc.estimated_time_in_hrs = calculated_time;
+                frm.refresh_field("estimated_time_in_hrs");
+                has_changes = true;
+            }
+        }
+        // If unit_cost not available, calculate it from estimated_time_in_hrs
+        else if (estimated_time_in_hrs > 0 && estimated_project_cost > 0) {
+            const calculated_unit_cost = estimated_project_cost / estimated_time_in_hrs;
+            const current_unit_cost = to_flt(frm.doc.unit_cost);
+
+            if (Math.abs(current_unit_cost - calculated_unit_cost) > 0.0001) {
+                frm.doc.unit_cost = calculated_unit_cost;
+                frm.refresh_field("unit_cost");
+                has_changes = true;
+            }
+        }
+    }
+    // If unit_cost changed, calculate estimated_time_in_hrs
+    else if (trigger_field === 'unit_cost') {
+        if (unit_cost > 0 && estimated_project_cost > 0) {
+            const calculated_time = estimated_project_cost / unit_cost;
+            const current_estimated_time = to_flt(frm.doc.estimated_time_in_hrs);
+
+            if (Math.abs(current_estimated_time - calculated_time) > 0.0001) {
+                frm.doc.estimated_time_in_hrs = calculated_time;
+                frm.refresh_field("estimated_time_in_hrs");
+                has_changes = true;
+            }
+        }
+    }
+    // If estimated_time_in_hrs changed, calculate unit_cost
+    else if (trigger_field === 'estimated_time_in_hrs') {
+        if (estimated_time_in_hrs > 0 && estimated_project_cost > 0) {
+            const calculated_unit_cost = estimated_project_cost / estimated_time_in_hrs;
+            const current_unit_cost = to_flt(frm.doc.unit_cost);
+
+            if (Math.abs(current_unit_cost - calculated_unit_cost) > 0.0001) {
+                frm.doc.unit_cost = calculated_unit_cost;
+                frm.refresh_field("unit_cost");
+                has_changes = true;
+            }
+        }
+    }
+    // Fallback: if no trigger specified, try both directions (for refresh)
+    else {
+        // Calculate estimated_time_in_hrs from unit_cost and estimated_project_cost
+        if (unit_cost > 0 && estimated_project_cost > 0) {
+            const calculated_time = estimated_project_cost / unit_cost;
+            const current_estimated_time = to_flt(frm.doc.estimated_time_in_hrs);
+
+            if (Math.abs(current_estimated_time - calculated_time) > 0.0001) {
+                frm.doc.estimated_time_in_hrs = calculated_time;
+                frm.refresh_field("estimated_time_in_hrs");
+                has_changes = true;
+            }
+        }
+        // Calculate unit_cost from estimated_time_in_hrs and estimated_project_cost
+        // Only if unit_cost is not set
+        else if (estimated_time_in_hrs > 0 && estimated_project_cost > 0 && (unit_cost === 0 || !frm.doc.unit_cost)) {
+            const calculated_unit_cost = estimated_project_cost / estimated_time_in_hrs;
+            const current_unit_cost = to_flt(frm.doc.unit_cost);
+
+            if (Math.abs(current_unit_cost - calculated_unit_cost) > 0.0001) {
+                frm.doc.unit_cost = calculated_unit_cost;
+                frm.refresh_field("unit_cost");
+                has_changes = true;
+            }
+        }
     }
 
-    const estimated_time_in_hrs = estimated_project_cost / unit_cost;
-    const current_estimated_time = to_flt(frm.doc.estimated_time_in_hrs);
-
-    if (Math.abs(current_estimated_time - estimated_time_in_hrs) > 0.0001) {
-        frm.doc.estimated_time_in_hrs = estimated_time_in_hrs;
-        frm.refresh_field("estimated_time_in_hrs");
-        
+    if (has_changes) {
         if (typeof frm.dirty === "function") {
             frm.dirty();
         } else {

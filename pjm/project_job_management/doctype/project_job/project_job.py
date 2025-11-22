@@ -9,9 +9,17 @@ from frappe.utils import flt
 class ProjectJob(Document):
 
 	def before_save(self):
+		estimated_project_cost = flt(self.estimated_project_cost or 0)
 		cost_per_hr = flt(self.unit_cost or 0)
-		if cost_per_hr > 0:
-			self.estimated_time_in_hrs = flt(self.estimated_project_cost or 0) / cost_per_hr
+		estimated_time_in_hrs = flt(self.estimated_time_in_hrs or 0)
+		
+		# Calculate estimated_time_in_hrs from unit_cost and estimated_project_cost
+		if cost_per_hr > 0 and estimated_project_cost > 0 and estimated_time_in_hrs == 0:
+			self.estimated_time_in_hrs = estimated_project_cost / cost_per_hr
+		
+		# Calculate unit_cost from estimated_time_in_hrs and estimated_project_cost
+		if estimated_time_in_hrs > 0 and estimated_project_cost > 0 and cost_per_hr == 0:
+			self.unit_cost = estimated_project_cost / estimated_time_in_hrs
 
 		# --- Calculate overhead & cost ---
 		self.calculate_overhead()

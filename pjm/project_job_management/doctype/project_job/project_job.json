@@ -68,8 +68,7 @@
   {
    "fieldname": "estimated_time_in_hrs",
    "fieldtype": "Float",
-   "label": "Estimated Job Time in Hrs",
-   "read_only_depends_on": "eval: !doc.manually_add_time;"
+   "label": "Estimated Job Time in Hrs"
   },
   {
    "fieldname": "job_status",
@@ -285,7 +284,7 @@
    "link_fieldname": "project"
   }
  ],
- "modified": "2025-11-19 18:25:26.088111",
+ "modified": "2025-11-22 15:45:23.644723",
  "modified_by": "Administrator",
  "module": "Project Job Management",
  "name": "Project Job",
